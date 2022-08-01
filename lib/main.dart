@@ -36,48 +36,32 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  //Retrieving user input
-  List<todo_list> _todoList = <todo_list>[];
-
+  //Creating variable user input and array to be inserted
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
+  List<todo_list> _todoList = [];
 
   void _addTodoItem() {
-    String titleText = titleController.text;
-    String descriptionText = descriptionController.text;
     setState(() {
+      String titleText = titleController.text;
+      String descriptionText = descriptionController.text;
       _todoList.add(todo_list(titleText, descriptionText));
-
-      // _todoList.add(descriptionText);
-
-      // String userInput = <String> [] as String;
     });
     print(_todoList[0].title);
   }
-
-  // void dispose() {
-  //   myController.dispose();
-  //   super.dispose();
-  // }
-
-  // Widget _buildTodoItem(String title) {
-  //   return ListTile(title: Text(title));
-  // }
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: AppBar(
-
         title: Text(widget.title),
       ),
       body: Container(
-        padding: EdgeInsets.all(20.0),
         decoration: BoxDecoration(
           border: Border.all(
               color: Colors.blueAccent,
-            width: 3,
+              width: 3,
           )
         ),
         child: Center(
@@ -104,30 +88,68 @@ class _MyHomePageState extends State<MyHomePage> {
                   controller: descriptionController,
                 ),
               ),
-              FloatingActionButton(
-                  child: Text(
+              Expanded(
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  physics: ClampingScrollPhysics(),
+                  padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  scrollDirection: Axis.vertical,
+                  itemCount: _todoList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                  height: 100,
+                  // child: Center(child: Text('ToDo ${index + 1} : \n Title: ${_todoList[index].title} \n Description: ${_todoList[index].description}')),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Todo ${index + 1}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.blue,
+                            fontSize: 22,
+                          ),
+                        ),
+                        Text(
+                          'Title: ${_todoList[index].title}:',
+                          style: TextStyle(
+                            color: Colors.cyan,
+                            fontSize: 20,
+                          ),
+                        ),
+                        Text(
+                          'Description: ${_todoList[index].description}:',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w300,
+                            color: Colors.lightBlueAccent,
+                            fontSize: 18,
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                  },
+                  separatorBuilder: (BuildContext context, int index) => const Divider(),
+                ),
+              ),
+              FlatButton(
+                minWidth: 700,
+                color: Colors.lightBlueAccent,
+                child: Text(
                       'Save',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Colors.white,
+                    ),
                   ),
                   onPressed: _addTodoItem,
               )
             ],
           ),
-          ListView.separated(
-            physics: ClampingScrollPhysics(),
-            // scrollDirection: Axis.horizontal,
-            // reverse: true,
-            padding: EdgeInsets.all(16.0),
-            itemCount: entries.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Container(
-                height: 50,
-                color: colorCodes[index % 3],
-                child: Center(child: Text('$index ${entries[index]}')),
-              );
-            },
-            separatorBuilder: (BuildContext context, int index) => const Divider(),
-        )
+        ),
       ),
     );
-   }
+  }
 }
